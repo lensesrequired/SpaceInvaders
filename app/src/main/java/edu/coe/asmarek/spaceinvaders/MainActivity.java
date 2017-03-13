@@ -47,19 +47,19 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         width = metrics.widthPixels;
 
         topFrame = (FrameLayout) findViewById(R.id.top);
-        RelativeLayout.LayoutParams tlp = new RelativeLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, height-275);
+        RelativeLayout.LayoutParams tlp = new RelativeLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, height-225);
         topFrame.setLayoutParams(tlp);
 
         bottomFrame = (FrameLayout) findViewById(R.id.bottom);
-        RelativeLayout.LayoutParams blp = new RelativeLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, 275);
+        RelativeLayout.LayoutParams blp = new RelativeLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, 225);
         bottomFrame.setLayoutParams(blp);
-        bottomFrame.setY(height-275);
+        bottomFrame.setY(height-225);
 
         ps = new PlayerShip(this);
         ps.setMaxX(width);
         ps.setMaxY(height);
         ps.setX((width / 2)-110);
-        ps.setY(25);
+        ps.setY(0);
         bottomFrame.addView(ps);
 
         for(int i = 0; i < 4; i++) {
@@ -151,8 +151,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
                     //Log.d("y", ((Integer) Math.round(ps.getY())).toString());
                     PlayBullet b = new PlayBullet(this);
-                    b.setX(ps.getX());
-                    b.setY(height - 200);
+                    b.setX(ps.getX()+25);
+                    b.setY(height-225);
                     topFrame.addView(b);
                     break;
             }
