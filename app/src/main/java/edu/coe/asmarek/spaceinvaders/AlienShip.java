@@ -79,7 +79,7 @@ public class AlienShip extends ImageView {
         speed = 50;
 
         setImageResource(R.drawable.widowship);
-        refreshHandler.postDelayed(update, wait);
+        refreshHandler.post(update);
     }
 
     private Runnable update = new Runnable(){
@@ -115,7 +115,8 @@ public class AlienShip extends ImageView {
             }
 
             invalidate();
-            refreshHandler.postDelayed(update, 800);
-
+            refreshHandler.removeCallbacks(update);
+            refreshHandler.postDelayed(update, wait);
+            setWait(800);
         }};
 }

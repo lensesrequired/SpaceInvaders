@@ -78,11 +78,11 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
                 as.setX(Math.round(75 + (i*((width-250)/16))));
                 as.setY(Math.round(75 + (j*((height-(height/2))/8))));
-                as.setMaxX(width - 100 - (w - Math.round(as.getX())));
+                as.setMaxX(width - 150 - (w - Math.round(as.getX())));
                 as.setMaxY(height - Math.round(as.getY()) - h);
                 as.setMinX(Math.round(as.getX()));
                 as.setSpeed((75 + (7*((width-250)/16)) - (75 + (6*((width-250)/16))))/2);
-                as.setWait(1000*j);
+                as.setWait((150 * (7-j)) + ((4-i)*20));
 
                 topFrame.addView(as);
             }
