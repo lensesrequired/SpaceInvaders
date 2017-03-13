@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,6 +24,7 @@ import static android.R.attr.layout_x;
 public class MainActivity extends AppCompatActivity implements View.OnTouchListener{
 
     private FrameLayout topFrame;
+    private FrameLayout bottomFrame;
     private PlayerShip ps;
     private int height;
     private int width;
@@ -44,14 +46,21 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         height = metrics.heightPixels;
         width = metrics.widthPixels;
 
-        topFrame = (FrameLayout) findViewById(R.id.content_main);
+        topFrame = (FrameLayout) findViewById(R.id.top);
+        RelativeLayout.LayoutParams tlp = new RelativeLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, height-275);
+        topFrame.setLayoutParams(tlp);
+
+        bottomFrame = (FrameLayout) findViewById(R.id.bottom);
+        RelativeLayout.LayoutParams blp = new RelativeLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, 275);
+        bottomFrame.setLayoutParams(blp);
+        bottomFrame.setY(height-275);
 
         ps = new PlayerShip(this);
         ps.setMaxX(width);
         ps.setMaxY(height);
         ps.setX((width / 2)-110);
-        ps.setY(height - 250);
-        topFrame.addView(ps);
+        ps.setY(25);
+        bottomFrame.addView(ps);
 
         for(int i = 0; i < 4; i++) {
             Shield s = new Shield(this);
@@ -80,6 +89,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         }
 
         topFrame.setOnTouchListener(this);
+        bottomFrame.setOnTouchListener(this);
     }
 
     @Override
@@ -109,7 +119,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         int touchX = (int)event.getX();
         int touchY = (int)event.getY();
 
-        if (touchY > (height - 300)) {
+        if (v.getId() == R.id.bottom) {
             switch (event.getAction()) {
                 case MotionEvent.ACTION_MOVE:
                     if (Math.abs(lastX - touchX) > 10 || Math.abs(lastY - touchY) > 10) {
@@ -141,13 +151,9 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
                     //Log.d("y", ((Integer) Math.round(ps.getY())).toString());
                     PlayBullet b = new PlayBullet(this);
-                    b.setX(ps.getX() - 9);
-                    b.setY(ps.getY() - 100);
+                    b.setX(ps.getX());
+                    b.setY(height - 200);
                     topFrame.addView(b);
-                    break;
-
-                case MotionEvent.ACTION_UP:
-                    refreshHandler.removeCallbacks(updatePlayerShip);
                     break;
             }
         }
