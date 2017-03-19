@@ -15,6 +15,8 @@ import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
 
+import static android.R.attr.delay;
+
 public class MainActivity extends AppCompatActivity implements View.OnTouchListener{
 
     private FrameLayout topFrame;
@@ -25,7 +27,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     private int lastX;
     private int lastY;
     private ArrayList<ArrayList<AlienShip>> alienShips;
-    private boolean playerMove = false;
+    private ArrayList<Shield> shields;
+    private ArrayList<PlayBullet> playerBullets;
 
     private Handler refreshHandler = new Handler();
 
@@ -34,6 +37,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initView();
+
+        refreshHandler.post(update);
     }
 
     private void initView() {
@@ -43,6 +48,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         width = metrics.widthPixels;
 
         alienShips = new ArrayList<ArrayList<AlienShip>>();
+        shields = new ArrayList<Shield>();
+        playerBullets = new ArrayList<PlayBullet>();
 
         topFrame = (FrameLayout) findViewById(R.id.top);
         RelativeLayout.LayoutParams tlp = new RelativeLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, height-225);
@@ -64,6 +71,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             Shield s = new Shield(this);
             s.setX(200 + (i*((width-250)/4)));
             s.setY(height-450);
+            shields.add(s);
             topFrame.addView(s);
         }
 
@@ -91,8 +99,6 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
         topFrame.setOnTouchListener(this);
         bottomFrame.setOnTouchListener(this);
-
-
     }
 
     @Override
@@ -156,6 +162,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                     PlayBullet b = new PlayBullet(this);
                     b.setX(ps.getX()+25);
                     b.setY(height-225);
+                    playerBullets.add(b);
                     topFrame.addView(b);
                     break;
             }
@@ -163,8 +170,34 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         return true;
     }
 
-    private Runnable runnable = new Runnable(){
+    private Runnable update = new Runnable(){
         @Override
         public void run(){
+            double alienHeight = alienShips.get(0).get(0).getHeight();
+            double alienWidth = alienShips.get(0).get(0).getWidth();
+            double shieldHeight = shields.get(0).getHeight();
+            double shieldWidth = shields.get(0).getWidth();
+            double playerHeight = ps.getHeight();
+            double playerWidth = ps.getWidth();
+            if(playerBullets.size() > 0) {
+                for (int i = playerBullets.size() - 1; i >= 0; i--) {
+                    PlayBullet b = playerBullets.get(i);
+                    if (b.getActiveStatus() == false) {
+                        playerBullets.remove(b);
+                    } else {
+                        for (Shield s :
+                                shields) {
+                            if (s.getX() < b.getX() && b.getX() < (s.getX() + shieldWidth) && s.getY() < b.getY() && b.getY() < (s.getY() + shieldHeight)) {
+                                Log.d("Collide", "collide");
+                                b.onCollision();
+                                s.onCollision();
+                            }
+                        }
+                    }
+                }
+            }
+
+
+            refreshHandler.postDelayed(update, 10);
         }};
 }

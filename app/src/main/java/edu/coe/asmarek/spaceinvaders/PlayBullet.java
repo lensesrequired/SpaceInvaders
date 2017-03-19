@@ -1,6 +1,7 @@
 package edu.coe.asmarek.spaceinvaders;
 
 import android.content.Context;
+import android.media.Image;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -22,6 +23,8 @@ public class PlayBullet extends ImageView {
     private int size;
 
     private int speed;
+
+    private boolean active;
 
     private Handler refreshHandler = new Handler();
 
@@ -56,14 +59,25 @@ public class PlayBullet extends ImageView {
         setLayoutParams(layoutParams);
 
         speed = 15;
+        active = true;
 
         setImageResource(R.drawable.hawkarrow);
         refreshHandler.post(update);
 
-        Log.d("newBullet", "newBullet");
+        //Log.d("newBullet", "newBullet");
     }
 
-    private void removeImage() { setImageBitmap(null); }
+    private void removeImage() {
+        setImageBitmap(null);
+        active = false;
+    }
+
+    public boolean getActiveStatus() { return active; }
+
+    public void onCollision() {
+        setImageBitmap(null);
+        active = false;
+    }
 
     private Runnable update = new Runnable(){
         @Override
@@ -80,7 +94,7 @@ public class PlayBullet extends ImageView {
                 invalidate();
                 refreshHandler.postDelayed(update, 1);
             } else {
-                Log.d("Else", "else");
+                //Log.d("Else", "else");
                 removeImage();
             }
         }};

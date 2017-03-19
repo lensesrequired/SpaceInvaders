@@ -65,6 +65,10 @@ public class AlienBullet extends ImageView {
 
     private void removeImage() { setImageBitmap(null); }
 
+    public void onCollision() {
+
+    }
+
     private Runnable update = new Runnable(){
         @Override
         public void run(){
@@ -80,7 +84,6 @@ public class AlienBullet extends ImageView {
                 invalidate();
                 refreshHandler.postDelayed(update, 1);
             } else {
-                Log.d("Else", "else");
                 removeImage();
             }
         }};

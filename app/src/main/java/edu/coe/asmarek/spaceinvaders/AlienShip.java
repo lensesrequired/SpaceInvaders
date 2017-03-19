@@ -78,6 +78,10 @@ public class AlienShip extends ImageView {
         refreshHandler.postDelayed(update, wait);
     }
 
+    public void onCollision() {
+
+    }
+
     private Runnable update = new Runnable(){
         @Override
         public void run(){
@@ -98,13 +102,13 @@ public class AlienShip extends ImageView {
                 setX(x);
             }
             if (newx >= maxX) {
-                Log.d("Direction", "Left");
+                //Log.d("Direction", "Left");
                 setDirection(LEFT);
                 y = newy;
                 setY(y);
             }
             if (newx <= minX) {
-                Log.d("Direction", "Right");
+                //Log.d("Direction", "Right");
                 setDirection(RIGHT);
                 y = newy;
                 setY(y);

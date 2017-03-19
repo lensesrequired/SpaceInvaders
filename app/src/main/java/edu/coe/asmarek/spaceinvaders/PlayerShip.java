@@ -76,6 +76,10 @@ public class PlayerShip extends ImageView {
         setImageResource(R.drawable.hawkship);
     }
 
+    public void onCollision() {
+
+    }
+
     public void move(){
         refreshHandler.post(updatePlayerShip);
     }
