@@ -77,24 +77,36 @@ public class PlayerShip extends ImageView {
     }
 
     public void move(){
-        int newx;
-
-        // Where will the bug go.
-        if (direction) {
-            newx = Math.round(getX()) + speed;
-        } else {
-            newx = Math.round(getX()) - speed;
-        }
-
-        //Log.d("Speed", ((Integer) newx).toString() );
-
-        // Did you hit a boundary?
-        if ((newx > maxX - speed - 185) || (newx < minX + speed + 28)){
-
-        }
-        else{
-            x = newx;
-            setX(x);
-        }
+        refreshHandler.post(updatePlayerShip);
     }
+
+    public void stop() {
+        refreshHandler.removeCallbacks(updatePlayerShip);
+    }
+
+    private Runnable updatePlayerShip = new Runnable(){
+        @Override
+        public void run(){
+            int newx;
+
+            // Where will the bug go.
+            if (direction) {
+                newx = Math.round(getX()) + speed;
+            } else {
+                newx = Math.round(getX()) - speed;
+            }
+
+            //Log.d("Speed", ((Integer) newx).toString() );
+
+            // Did you hit a boundary?
+            if ((newx > maxX - speed - 185) || (newx < minX + speed + 28)){
+
+            } else {
+                x = newx;
+                setX(x);
+            }
+
+            invalidate();
+            refreshHandler.postDelayed(updatePlayerShip, 10);
+        }};
 }

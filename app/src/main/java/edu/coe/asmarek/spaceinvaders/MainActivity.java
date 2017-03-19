@@ -2,24 +2,18 @@ package edu.coe.asmarek.spaceinvaders;
 
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import static android.R.attr.breadCrumbShortTitle;
-import static android.R.attr.delay;
-import static android.R.attr.layout_x;
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements View.OnTouchListener{
 
@@ -30,6 +24,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     private int width;
     private int lastX;
     private int lastY;
+    private ArrayList<ArrayList<AlienShip>> alienShips;
+    private boolean playerMove = false;
 
     private Handler refreshHandler = new Handler();
 
@@ -45,6 +41,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
         height = metrics.heightPixels;
         width = metrics.widthPixels;
+
+        alienShips = new ArrayList<ArrayList<AlienShip>>();
 
         topFrame = (FrameLayout) findViewById(R.id.top);
         RelativeLayout.LayoutParams tlp = new RelativeLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, height-225);
@@ -70,11 +68,13 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         }
 
         for(int i = 0; i < 8; i++) {
+            alienShips.add(new ArrayList<AlienShip>());
             for(int j = 0; j < 5; j++) {
                 int w = 75 + (7*((width-250)/16));
                 int h = 75 + (4*((height-(height/2))/8));
+                int wait = (150 * (7-j)) + ((4-i)*20);
 
-                AlienShip as = new AlienShip(this);
+                AlienShip as = new AlienShip(this, wait);
 
                 as.setX(Math.round(75 + (i*((width-250)/16))));
                 as.setY(Math.round(75 + (j*((height-(height/2))/8))));
@@ -82,7 +82,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 as.setMaxY(height - Math.round(as.getY()) - h);
                 as.setMinX(Math.round(as.getX()));
                 as.setSpeed((75 + (7*((width-250)/16)) - (75 + (6*((width-250)/16))))/2);
-                as.setWait((150 * (7-j)) + ((4-i)*20));
+
+                alienShips.get(alienShips.size()-1).add(as);
 
                 topFrame.addView(as);
             }
@@ -90,6 +91,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
         topFrame.setOnTouchListener(this);
         bottomFrame.setOnTouchListener(this);
+
+
     }
 
     @Override
@@ -124,8 +127,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 case MotionEvent.ACTION_MOVE:
                     if (Math.abs(lastX - touchX) > 10 || Math.abs(lastY - touchY) > 10) {
                         ps.setDirection(touchX > ps.getX());
-                        refreshHandler.removeCallbacks(updatePlayerShip);
-                        refreshHandler.post(updatePlayerShip);
+                        ps.stop();
+                        ps.move();
                     }
                     lastX = touchX;
                     lastY = touchY;
@@ -136,11 +139,11 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                     lastY = touchY;
 
                     ps.setDirection(touchX > ps.getX());
-                    refreshHandler.post(updatePlayerShip);
+                    ps.move();
                     break;
 
                 case MotionEvent.ACTION_UP:
-                    refreshHandler.removeCallbacks(updatePlayerShip);
+                    ps.stop();
                     break;
             }
         } else {
@@ -160,11 +163,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         return true;
     }
 
-    private Runnable updatePlayerShip = new Runnable(){
+    private Runnable runnable = new Runnable(){
         @Override
         public void run(){
-            ps.move();
-            ps.invalidate();
-            refreshHandler.postDelayed(updatePlayerShip, 10);
         }};
 }

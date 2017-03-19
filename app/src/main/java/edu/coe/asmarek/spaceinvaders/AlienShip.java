@@ -27,23 +27,22 @@ public class AlienShip extends ImageView {
 
     private int speed;
     private boolean direction;
-    private int wait;
 
     private Handler refreshHandler = new Handler();
 
-    public AlienShip(Context context) {
+    public AlienShip(Context context, int wait) {
         super(context);
-        init();
+        init(wait);
     }
 
-    public AlienShip(Context context, AttributeSet attrs) {
+    public AlienShip(Context context, AttributeSet attrs, int wait) {
         super(context, attrs);
-        init();
+        init(wait);
     }
 
-    public AlienShip(Context context, AttributeSet attrs, int defStyleAttr) {
+    public AlienShip(Context context, AttributeSet attrs, int defStyleAttr, int wait) {
         super(context, attrs, defStyleAttr);
-        init();
+        init(wait);
     }
 
     public void setMaxX(int max) {
@@ -57,9 +56,8 @@ public class AlienShip extends ImageView {
     }
     public void setDirection(boolean dir) { direction = dir; }
     public void setSpeed(int s) { speed = s; }
-    public void setWait(int w) { wait = w; }
 
-    private void init(){
+    private void init(int wait){
         maxX= 800;
         maxY = 1200;
         minX = 0;
@@ -70,8 +68,6 @@ public class AlienShip extends ImageView {
         size = 50;
         direction = RIGHT;
 
-        wait = 0;
-
         // Adjust the size of the bug
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(size, size);
         setLayoutParams(layoutParams);
@@ -79,7 +75,7 @@ public class AlienShip extends ImageView {
         speed = 50;
 
         setImageResource(R.drawable.widowship);
-        refreshHandler.post(update);
+        refreshHandler.postDelayed(update, wait);
     }
 
     private Runnable update = new Runnable(){
@@ -115,8 +111,8 @@ public class AlienShip extends ImageView {
             }
 
             invalidate();
-            refreshHandler.removeCallbacks(update);
-            refreshHandler.postDelayed(update, wait);
-            setWait(800);
+            //refreshHandler.removeCallbacks(update);
+            refreshHandler.postDelayed(update, 800);
+            //setWait(800);
         }};
 }
