@@ -25,6 +25,8 @@ public class AlienShip extends ImageView {
 
     private int size;
 
+    private int delay;
+
     private int speed;
     private boolean direction;
 
@@ -74,12 +76,14 @@ public class AlienShip extends ImageView {
 
         speed = 50;
 
+        delay = 800;
+
         setImageResource(R.drawable.widowship);
         refreshHandler.postDelayed(update, wait);
     }
 
     public void onCollision() {
-
+        setImageBitmap(null);
     }
 
     private Runnable update = new Runnable(){
@@ -95,7 +99,8 @@ public class AlienShip extends ImageView {
                 newx = Math.round(getX()) - speed;
             }
 
-            newy = Math.round(getY()) + speed;
+            newy = Math.round(getY()) + (3/2*speed);
+
 
             if (newx < maxX && newx > minX) {
                 x = newx;
@@ -106,17 +111,19 @@ public class AlienShip extends ImageView {
                 setDirection(LEFT);
                 y = newy;
                 setY(y);
+                delay = Math.round(delay/4*3);
             }
             if (newx <= minX) {
                 //Log.d("Direction", "Right");
                 setDirection(RIGHT);
                 y = newy;
                 setY(y);
+                delay = Math.round(delay/4*3);
             }
 
             invalidate();
             //refreshHandler.removeCallbacks(update);
-            refreshHandler.postDelayed(update, 800);
+            refreshHandler.postDelayed(update, delay);
             //setWait(800);
         }};
 }

@@ -47,6 +47,14 @@ public class Shield extends ImageView {
         setImageResource(R.drawable.shield1);
     }
 
+    public void reset() {
+        setImageResource(R.drawable.shield1);
+    }
+
+    public int getState() {
+        return state;
+    }
+
     public void onCollision() {
         switch (state) {
             case 1:
